@@ -1,0 +1,15 @@
+C:\Users\bogda\OneDrive\Документы\GitHub\Formula-1-Management\f1management\bin\Debug\net9.0\f1management.exe
+C:\Users\bogda\OneDrive\Документы\GitHub\Formula-1-Management\f1management\bin\Debug\net9.0\f1management.deps.json
+C:\Users\bogda\OneDrive\Документы\GitHub\Formula-1-Management\f1management\bin\Debug\net9.0\f1management.runtimeconfig.json
+C:\Users\bogda\OneDrive\Документы\GitHub\Formula-1-Management\f1management\bin\Debug\net9.0\f1management.dll
+C:\Users\bogda\OneDrive\Документы\GitHub\Formula-1-Management\f1management\bin\Debug\net9.0\f1management.pdb
+C:\Users\bogda\OneDrive\Документы\GitHub\Formula-1-Management\f1management\obj\Debug\net9.0\f1management.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\bogda\OneDrive\Документы\GitHub\Formula-1-Management\f1management\obj\Debug\net9.0\f1management.AssemblyInfoInputs.cache
+C:\Users\bogda\OneDrive\Документы\GitHub\Formula-1-Management\f1management\obj\Debug\net9.0\f1management.AssemblyInfo.cs
+C:\Users\bogda\OneDrive\Документы\GitHub\Formula-1-Management\f1management\obj\Debug\net9.0\f1management.csproj.CoreCompileInputs.cache
+C:\Users\bogda\OneDrive\Документы\GitHub\Formula-1-Management\f1management\obj\Debug\net9.0\f1management.sourcelink.json
+C:\Users\bogda\OneDrive\Документы\GitHub\Formula-1-Management\f1management\obj\Debug\net9.0\f1management.dll
+C:\Users\bogda\OneDrive\Документы\GitHub\Formula-1-Management\f1management\obj\Debug\net9.0\refint\f1management.dll
+C:\Users\bogda\OneDrive\Документы\GitHub\Formula-1-Management\f1management\obj\Debug\net9.0\f1management.pdb
+C:\Users\bogda\OneDrive\Документы\GitHub\Formula-1-Management\f1management\obj\Debug\net9.0\f1management.genruntimeconfig.cache
+C:\Users\bogda\OneDrive\Документы\GitHub\Formula-1-Management\f1management\obj\Debug\net9.0\ref\f1management.dll

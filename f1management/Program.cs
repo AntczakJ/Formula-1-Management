@@ -1,4 +1,5 @@
-﻿using f1management.classes;
+﻿using f1management.TeamManagement;
+using f1management.RaceManagement;
 
 namespace f1management;
 
@@ -6,6 +7,6 @@ class Program
 {
     static void Main(string[] args)
     {
-        Principal Principal1 = new Principal("John", "Smith");
+        Principal nowy = new Principal("John", "Smith");
     }
 }
