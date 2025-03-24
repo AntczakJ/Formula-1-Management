@@ -1,9 +1,6 @@
-using System.Collections.Generic;
+using f1management.TeamManagement;
 using System;
-using System.Security.Cryptography;
-using System.Text;
-using System.IO;
-using System.Linq;
+
 namespace f1management.Methods
 {
     public enum Role
@@ -49,6 +46,32 @@ namespace f1management.Methods
         public static List<Permission> GetPermissions(Role role)
         {
             return _rolePermissions.ContainsKey(role) ? _rolePermissions[role] : new List<Permission>();
+        }
+    }
+
+    public class AccountManagement
+    {
+        public bool LoginUser(string username, string password)
+        {
+            PasswordManager.PasswordVerified += OnPasswordVerified;
+
+            bool isVerified = PasswordManager.VerifyPassword(username, password);
+
+            PasswordManager.PasswordVerified -= OnPasswordVerified;
+
+            return isVerified;
+        }
+
+        private void OnPasswordVerified(string user, bool isVerified)
+        {
+            if (isVerified)
+            {
+                Console.WriteLine("Pomyślnie zweryfikowano hasło");
+            }
+            else
+            {
+                Console.WriteLine("Nie udało się zweryfikować hasła");
+            }
         }
     }
 }
