@@ -1,4 +1,6 @@
 ﻿using f1management.Methods;
+using System;
+using System.Collections.Generic;
 
 namespace f1management.TeamManagement
 {
@@ -11,6 +13,37 @@ namespace f1management.TeamManagement
         {
             FirstName = firstName;
             LastName = lastName;
+        }
+
+        public void DisplayInfo()
+        {
+            Console.WriteLine($"Mechanik: {FirstName} {LastName}");
+        }
+
+        public void AddMechanic(List<Mechanics> mechanics)
+        {
+            if (mechanics.Contains(this))
+            {
+                Console.WriteLine($"Mechanik {FirstName} {LastName} już istnieje.");
+            }
+            else
+            {
+                mechanics.Add(this);
+                Console.WriteLine($"Mechanik {FirstName} {LastName} dodany.");
+            }
+        }
+
+        public void RemoveMechanic(List<Mechanics> mechanics)
+        {
+            if (mechanics.Contains(this))
+            {
+                mechanics.Remove(this);
+                Console.WriteLine($"Mechanik {FirstName} {LastName} usunięty.");
+            }
+            else
+            {
+                Console.WriteLine($"Mechanik {FirstName} {LastName} nie istnieje.");
+            }
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using f1management.Methods;
+using System;
+using System.Collections.Generic;
 
 namespace f1management.TeamManagement
 {
@@ -11,6 +13,37 @@ namespace f1management.TeamManagement
         {
             FirstName = firstName;
             LastName = lastName;
+        }
+
+        public void DisplayInfo()
+        {
+            Console.WriteLine($"Kierowca: {FirstName} {LastName}");
+        }
+
+        public void AddDriver(List<Driver> drivers)
+        {
+            if (drivers.Contains(this))
+            {
+                Console.WriteLine($"Kierowca {FirstName} {LastName} już istnieje.");
+            }
+            else
+            {
+                drivers.Add(this);
+                Console.WriteLine($"Kierowca {FirstName} {LastName} dodany.");
+            }
+        }
+
+        public void RemoveDriver(List<Driver> drivers)
+        {
+            if (drivers.Contains(this))
+            {
+                drivers.Remove(this);
+                Console.WriteLine($"Kierowca {FirstName} {LastName} usunięty.");
+            }
+            else
+            {
+                Console.WriteLine($"Kierowca {FirstName} {LastName} nie istnieje.");
+            }
         }
     }
 }
