@@ -1,7 +1,16 @@
-﻿namespace f1management.TeamManagement;
+﻿using f1management.Methods;
 
-public class Driver : Team
+namespace f1management.TeamManagement
 {
-    public string firstName { get; set; }
-    public string lastName { get; set; }
+    public class Driver : User
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
+        public Driver(string firstName, string lastName) : base(Role.Driver)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+        }
+    }
 }

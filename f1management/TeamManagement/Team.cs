@@ -1,13 +1,22 @@
-﻿namespace f1management.TeamManagement;
+﻿using System.Collections.Generic;
 
-
-public class Team
+namespace f1management.TeamManagement
 {
-    
-    public string Team_Name { get; set; }
-    public Principal Principal { get; set; }
-    public List<Mechanics> Mechanics { get; set; }
-    public List<Driver> Drivers { get; set; }
-    public float Budget { get; set; }
-    
+    public class Team
+    {
+        public string Team_Name { get; set; }
+        public Principal Principal { get; set; }
+        public List<Mechanics> Mechanics { get; set; }
+        public List<Driver> Drivers { get; set; }
+        public float Budget { get; set; }
+
+        public Team(string teamName, Principal principal, List<Mechanics> mechanics, List<Driver> drivers, float budget)
+        {
+            Team_Name = teamName;
+            Principal = principal;
+            Mechanics = mechanics;
+            Drivers = drivers;
+            Budget = budget;
+        }
+    }
 }

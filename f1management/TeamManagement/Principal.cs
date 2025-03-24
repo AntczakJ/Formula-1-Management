@@ -1,15 +1,16 @@
-﻿namespace f1management.TeamManagement;
+﻿using f1management.Methods;
 
-public class Principal : Team
+namespace f1management.TeamManagement
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-
-    public Principal(string firstName, string lastName)
+    public class Principal : User
     {
-        FirstName = firstName;
-        LastName = lastName;
-    }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
 
-    
+        public Principal(string firstName, string lastName) : base(Role.Principal)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+        }
+    }
 }
