@@ -1,11 +1,12 @@
-// Import przestrzeni nazw (TeamManagement zawiera np. klasy związane z zespołami F1)
+// Import przestrzeni nazw potrzebnych do działania klas
 using f1management.TeamManagement;
 using System;
 using f1management.RaceManagement;
+using System.Collections.Generic;
 
 namespace f1management.Methods
 {
-    // Enum określający role użytkowników w systemie
+    // Enum określający możliwe role użytkowników
     public enum Role
     {
         Principal,  // Szef zespołu
@@ -13,7 +14,7 @@ namespace f1management.Methods
         Driver      // Kierowca
     }
 
-    // Enum reprezentujący poziomy uprawnień
+    // Enum określający poziomy uprawnień
     public enum Permission
     {
         ManageTracks,  // Zarządzanie torami
@@ -21,6 +22,7 @@ namespace f1management.Methods
         ManageTeam     // Zarządzanie zespołem
     }
 
+    // Interfejs do wyświetlania informacji
     public interface Information
     {
         void DisplayInfo();
@@ -29,29 +31,26 @@ namespace f1management.Methods
     // Klasa reprezentująca użytkownika systemu
     public class User
     {
-        // Definicja delegata (podpis metody) do zapisu użytkownika do pliku
-        public delegate void SaveToFile(User x, List<Driver> drivers,
-            List<Mechanics> mechanics, List<Principal> principals);
-        
-        // Event, który można wywołać by zapisać użytkownika
+        // Delegat do zapisu użytkownika do pliku
+        public delegate void SaveToFile(User x, List<Driver> drivers, List<Mechanics> mechanics, List<Principal> principals);
+
+        // Zdarzenie do zapisu użytkownika
         public static event SaveToFile SaveInfo;
-        
-        
-        public delegate void RemoveFromFile(User x, List<Driver> drivers,
-            List<Mechanics> mechanics, List<Principal> principals);
+
+        // Delegat do usuwania użytkownika z pliku
+        public delegate void RemoveFromFile(User x, List<Driver> drivers, List<Mechanics> mechanics, List<Principal> principals);
+
+        // Zdarzenie do usuwania użytkownika
         public static event RemoveFromFile RemoveInfo;
 
-
-        // Właściwości użytkownika: imię, nazwisko, rola, uprawnienia
+        // Właściwości użytkownika
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public Role Role { get; set; }
-        
         public string Username { get; set; }
-
         public List<Permission> Permissions { get; set; }
 
-        // Konstruktor – tworzy użytkownika i przypisuje mu odpowiednie uprawnienia na podstawie roli
+        // Konstruktor użytkownika – przypisuje uprawnienia zgodnie z rolą
         public User(string firstname, string lastname, Role role, string username)
         {
             FirstName = firstname;
@@ -61,29 +60,29 @@ namespace f1management.Methods
             Permissions = RBAC.GetPermissions(role);
         }
 
-
-        // Sprawdzenie, czy użytkownik ma konkretne uprawnienie
+        // Sprawdza, czy użytkownik ma dane uprawnienie
         public bool HasPermission(Permission permission)
         {
             return Permissions.Contains(permission);
         }
-        
+
+        // Wywołanie zapisu użytkownika
         public static void TriggerSave(User user, List<Driver> drivers, List<Mechanics> mechanics, List<Principal> principals)
         {
             SaveInfo?.Invoke(user, drivers, mechanics, principals);
         }
-        
 
+        // Wywołanie usunięcia użytkownika
         public static void TriggerRemove(User user, List<Driver> drivers, List<Mechanics> mechanics, List<Principal> principals)
         {
             RemoveInfo?.Invoke(user, drivers, mechanics, principals);
         }
     }
 
-    // Statyczna klasa odpowiedzialna za Role-Based Access Control (RBAC)
+    // Klasa RBAC – przypisuje uprawnienia do ról
     public static class RBAC
     {
-        // Słownik przypisujący role do listy uprawnień
+        // Słownik łączący role z ich uprawnieniami
         private static readonly Dictionary<Role, List<Permission>> _rolePermissions = new Dictionary<Role, List<Permission>>
         {
             { Role.Principal, new List<Permission>{ Permission.Read, Permission.ManageTeam, Permission.ManageTracks }},
@@ -91,32 +90,29 @@ namespace f1management.Methods
             { Role.Driver, new List<Permission>{ Permission.Read }}
         };
 
-        // Metoda zwracająca listę uprawnień przypisanych do danej roli
+        // Zwraca uprawnienia dla danej roli
         public static List<Permission> GetPermissions(Role role)
         {
             return _rolePermissions.ContainsKey(role) ? _rolePermissions[role] : new List<Permission>();
         }
     }
 
-    // Klasa zarządzająca logowaniem użytkownika
+    // Klasa odpowiadająca za logowanie użytkownika
     public class AccountManagement
     {
-        // Logowanie użytkownika na podstawie loginu i hasła
+        // Metoda logowania – weryfikuje dane i subskrybuje zdarzenie
         public bool LoginUser(string username, string password)
         {
-            // Podpinanie się pod zdarzenie z PasswordManagera
             PasswordManager.PasswordVerified += OnPasswordVerified;
 
-            // Weryfikacja hasła
             bool isVerified = PasswordManager.VerifyPassword(username, password);
 
-            // Odpinanie zdarzenia po zakończeniu
             PasswordManager.PasswordVerified -= OnPasswordVerified;
 
             return isVerified;
         }
 
-        // Obsługa zdarzenia PasswordVerified – wypisuje komunikat w zależności od wyniku
+        // Obsługa zdarzenia po weryfikacji hasła
         private void OnPasswordVerified(string user, bool isVerified)
         {
             if (isVerified)

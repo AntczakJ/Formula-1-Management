@@ -4,8 +4,10 @@ using System.Collections.Generic;
 
 namespace f1management.TeamManagement
 {
+    // Klasa reprezentująca szefa zespołu.
     public class Principal : User, Information
     {
+        // Konstruktor szefa zespołu, zapisuje obiekt i obsługuje wyjątki.
         public Principal(string firstName, string lastName, string username)
             : base(firstName, lastName, Role.Principal, username)
         {
@@ -19,11 +21,13 @@ namespace f1management.TeamManagement
             }
         }
 
+        // Wyświetla informacje o szefie zespołu.
         public void DisplayInfo()
         {
             Console.WriteLine($"Szef zespołu: {FirstName} {LastName}");
         }
 
+        // Dodaje nowego szefa do listy, jeśli jeszcze go tam nie ma.
         public void AddPrincipal(User user, List<Principal> principals)
         {
             try
@@ -47,6 +51,7 @@ namespace f1management.TeamManagement
             }
         }
 
+        // Usuwa szefa zespołu z listy, jeśli istnieje.
         public void RemovePrincipal(List<Principal> principals)
         {
             try

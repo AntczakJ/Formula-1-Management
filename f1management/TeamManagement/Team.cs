@@ -1,28 +1,29 @@
-﻿﻿using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using System.IO;
 
 namespace f1management.TeamManagement
 {
+    // Klasa opisująca zespół F1: szef, mechanicy, kierowcy i budżet.
     public class Team
     {
-        public string TeamName { get; set; }
-        public Principal Principal { get; set; }
-        public List<Mechanics> Mechanics { get; set; }
-        public List<Driver> Drivers { get; set; }
-        public float Budget { get; set; }
+        public string TeamName { get; set; }          // Nazwa zespołu.
+        public Principal Principal { get; set; }     // Szef zespołu.
+        public List<Mechanics> Mechanics { get; set; } // Lista mechaników.
+        public List<Driver> Drivers { get; set; }    // Lista kierowców.
+        public float Budget { get; set; }            // Budżet zespołu.
 
-        public delegate void TeamInfo();
+        public delegate void TeamInfo();             // Delegat do wyświetlania info.
+        public delegate void LogTeamAction(Team team, string action); // Delegat do logowania.
+        public static event LogTeamAction TeamLog;   // Event logujący akcje zespołu.
 
-        // Event i delegat do logowania
-        public delegate void LogTeamAction(Team team, string action);
-        public static event LogTeamAction TeamLog;
-
+        // Wywołuje logowanie dla podanej akcji.
         public static void TriggerTeamLog(Team team, string action)
         {
             TeamLog?.Invoke(team, action);
         }
 
+        // Konstruktor tworzący zespół z początkowymi danymi.
         public Team(string teamName, Principal principal, List<Mechanics> mechanics, List<Driver> drivers, float budget)
         {
             TeamName = teamName;
@@ -32,6 +33,7 @@ namespace f1management.TeamManagement
             Budget = budget;
         }
 
+        // Dodaje kierowcę, jeśli nie jest jeszcze w zespole.
         public void AddDriver(Driver driver)
         {
             if (Drivers.Contains(driver))
@@ -46,6 +48,7 @@ namespace f1management.TeamManagement
             }
         }
 
+        // Usuwa kierowcę z zespołu.
         public void RemoveDriver(Driver driver)
         {
             if (Drivers.Contains(driver))
@@ -60,6 +63,7 @@ namespace f1management.TeamManagement
             }
         }
 
+        // Dodaje mechanika, jeśli nie jest jeszcze w zespole.
         public void AddMechanic(Mechanics mechanic)
         {
             if (Mechanics.Contains(mechanic))
@@ -74,6 +78,7 @@ namespace f1management.TeamManagement
             }
         }
 
+        // Usuwa mechanika z zespołu.
         public void RemoveMechanic(Mechanics mechanic)
         {
             if (Mechanics.Contains(mechanic))
@@ -88,6 +93,7 @@ namespace f1management.TeamManagement
             }
         }
 
+        // Przypisuje szefa do zespołu, jeśli nie ma jeszcze szefa.
         public void AddPrincipal(Principal principal)
         {
             if (Principal == null)
@@ -102,7 +108,7 @@ namespace f1management.TeamManagement
             }
         }
 
-
+        // Usuwa szefa zespołu, jeśli pasuje do podanego obiektu.
         public void RemovePrincipal(Principal principal)
         {
             if (Principal == principal)
@@ -117,6 +123,7 @@ namespace f1management.TeamManagement
             }
         }
 
+        // Zwiększa budżet zespołu.
         public void IncreaseBudget(float amount, string reason)
         {
             Budget += amount;
@@ -124,6 +131,7 @@ namespace f1management.TeamManagement
             TriggerTeamLog(this, $"Zwiększono budżet o {amount}$ z powodu: {reason}");
         }
 
+        // Zmniejsza budżet zespołu.
         public void DecreaseBudget(float amount, string reason)
         {
             Budget -= amount;
@@ -131,6 +139,7 @@ namespace f1management.TeamManagement
             TriggerTeamLog(this, $"Zmniejszono budżet o {amount}$ z powodu: {reason}");
         }
 
+        // Wyświetla dane o zespole, szefie, kierowcach i mechanikach.
         public void DisplayInfo()
         {
             List<string> missingInfo = new List<string>();
@@ -171,6 +180,5 @@ namespace f1management.TeamManagement
                 info.Invoke();
             }
         }
-
     }
 }
