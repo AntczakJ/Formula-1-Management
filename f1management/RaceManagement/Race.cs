@@ -11,6 +11,14 @@ public class Race
     
     public delegate void SaveToList(Race race, List<Race> races);
     public static event SaveToList SaveRaceToList;
+    
+    public delegate void RemoveFromList(Race race, List<Race> races);
+    public static event RemoveFromList RemoveRaceInfo;
+
+    public static void TriggerRemove(Race race, List<Race> races)
+    {
+        RemoveRaceInfo?.Invoke(race, races);
+    }
 
     public Race(string name, DateTime startDate)
     {
@@ -42,7 +50,8 @@ public class Race
             if (races.Contains(this))
             {
                 races.Remove(this);
-                Console.WriteLine($"Wyscig {Name} jest usunięty");
+                Console.WriteLine($"Wyścig {Name} jest usunięty");
+                TriggerRemove(this, races);
             }
             else
             {

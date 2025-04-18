@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+﻿﻿using System.Collections.Generic;
 using System;
+using System.IO;
 
 namespace f1management.TeamManagement
 {
@@ -10,9 +11,17 @@ namespace f1management.TeamManagement
         public List<Mechanics> Mechanics { get; set; }
         public List<Driver> Drivers { get; set; }
         public float Budget { get; set; }
-        
 
         public delegate void TeamInfo();
+
+        // Event i delegat do logowania
+        public delegate void LogTeamAction(Team team, string action);
+        public static event LogTeamAction TeamLog;
+
+        public static void TriggerTeamLog(Team team, string action)
+        {
+            TeamLog?.Invoke(team, action);
+        }
 
         public Team(string teamName, Principal principal, List<Mechanics> mechanics, List<Driver> drivers, float budget)
         {
@@ -21,7 +30,6 @@ namespace f1management.TeamManagement
             Mechanics = mechanics;
             Drivers = drivers;
             Budget = budget;
-            
         }
 
         public void AddDriver(Driver driver)
@@ -34,6 +42,7 @@ namespace f1management.TeamManagement
             {
                 Drivers.Add(driver);
                 Console.WriteLine($"Kierowca {driver.FirstName} {driver.LastName} został dodany do zespołu.");
+                TriggerTeamLog(this, $"Dodano kierowcę {driver.FirstName} {driver.LastName}");
             }
         }
 
@@ -43,6 +52,7 @@ namespace f1management.TeamManagement
             {
                 Drivers.Remove(driver);
                 Console.WriteLine($"Kierowca {driver.FirstName} {driver.LastName} został usunięty z zespołu.");
+                TriggerTeamLog(this, $"Usunięto kierowcę {driver.FirstName} {driver.LastName}");
             }
             else
             {
@@ -60,6 +70,7 @@ namespace f1management.TeamManagement
             {
                 Mechanics.Add(mechanic);
                 Console.WriteLine($"Mechanik {mechanic.FirstName} {mechanic.LastName} został dodany do zespołu.");
+                TriggerTeamLog(this, $"Dodano mechanika {mechanic.FirstName} {mechanic.LastName}");
             }
         }
 
@@ -69,6 +80,7 @@ namespace f1management.TeamManagement
             {
                 Mechanics.Remove(mechanic);
                 Console.WriteLine($"Mechanik {mechanic.FirstName} {mechanic.LastName} został usunięty z zespołu.");
+                TriggerTeamLog(this, $"Usunięto mechanika {mechanic.FirstName} {mechanic.LastName}");
             }
             else
             {
@@ -86,6 +98,7 @@ namespace f1management.TeamManagement
             {
                 Principal = principal;
                 Console.WriteLine($"Szef zespołu {principal.FirstName} {principal.LastName} został dodany do zespołu.");
+                TriggerTeamLog(this, $"Dodano szefa zespołu {principal.FirstName} {principal.LastName}");
             }
         }
 
@@ -95,6 +108,7 @@ namespace f1management.TeamManagement
             {
                 Principal = null;
                 Console.WriteLine($"Szef zespołu {principal.FirstName} {principal.LastName} został usunięty z zespołu.");
+                TriggerTeamLog(this, $"Usunięto szefa zespołu {principal.FirstName} {principal.LastName}");
             }
             else
             {
@@ -106,12 +120,14 @@ namespace f1management.TeamManagement
         {
             Budget += amount;
             Console.WriteLine($"Budżet zwiększony o {amount}$ z powodu: {reason}. Aktualny budżet: {Budget}");
+            TriggerTeamLog(this, $"Zwiększono budżet o {amount}$ z powodu: {reason}");
         }
 
         public void DecreaseBudget(float amount, string reason)
         {
             Budget -= amount;
             Console.WriteLine($"Budżet zmniejszony o {amount}$ z powodu: {reason}. Aktualny budżet: {Budget}");
+            TriggerTeamLog(this, $"Zmniejszono budżet o {amount}$ z powodu: {reason}");
         }
 
         public void DisplayInfo()

@@ -6,8 +6,6 @@ namespace f1management.TeamManagement
 {
     public class Principal : User, Information
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
 
         public Principal(string firstName, string lastName) : base(firstName, lastName, Role.Principal)
         {
@@ -24,7 +22,7 @@ namespace f1management.TeamManagement
         {
             if (user is Principal principal)
             {
-                if (!principals.Any(d => d.FirstName == principal.FirstName && d.LastName == principal.LastName))
+                if (!principals.Contains(this))
                 {
                     principals.Add(principal);
                     Console.WriteLine($"Szef {principal.FirstName} {principal.LastName} dodany.");
@@ -34,10 +32,6 @@ namespace f1management.TeamManagement
                     Console.WriteLine($"Szef {principal.FirstName} {principal.LastName} już istnieje.");
                 }
             }
-            else
-            {
-                Console.WriteLine("[ERROR] Obiekt user NIE JEST typu principal");
-            }
         }
 
         public void RemovePrincipal(List<Principal> principals)
@@ -46,6 +40,7 @@ namespace f1management.TeamManagement
             {
                 principals.Remove(this);
                 Console.WriteLine($"Szef zespołu {FirstName} {LastName} usunięty.");
+                User.TriggerRemove(this, Program.Drivers, Program.Mechanics, Program.Principals);
             }
             else
             {

@@ -20,7 +20,7 @@ namespace f1management.TeamManagement
         public void AddMechanic(User user, List<Mechanics> mechanics)
         {
             
-                if (!mechanics.Any(d => d.FirstName == FirstName && d.LastName == LastName))
+                if (!mechanics.Contains(this))
                 {
                     mechanics.Add(this);
                     Console.WriteLine($"Mechanik {FirstName} {LastName} dodany.");
@@ -39,6 +39,7 @@ namespace f1management.TeamManagement
             {
                 mechanics.Remove(this);
                 Console.WriteLine($"Mechanik {FirstName} {LastName} usunięty.");
+                User.TriggerRemove(this, Program.Drivers, Program.Mechanics, Program.Principals);
             }
             else
             {

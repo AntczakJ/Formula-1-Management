@@ -21,7 +21,7 @@ namespace f1management.TeamManagement
         public void AddDriver(List<Driver> drivers)
         {
             
-                if (drivers.Contains(this))
+                if (!drivers.Contains(this))
                 {
                     drivers.Add(this);
                     Console.WriteLine($"Kierowca {FirstName} {LastName} dodany.");
@@ -40,6 +40,7 @@ namespace f1management.TeamManagement
             {
                 drivers.Remove(this);
                 Console.WriteLine($"Kierowca {FirstName} {LastName} usunięty.");
+                User.TriggerRemove(this, Program.Drivers, Program.Mechanics, Program.Principals);
             }
             else
             {

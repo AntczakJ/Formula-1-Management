@@ -33,10 +33,14 @@ namespace f1management.Methods
         public delegate void SaveToFile(User x, List<Driver> drivers,
             List<Mechanics> mechanics, List<Principal> principals);
         
-        
-
         // Event, który można wywołać by zapisać użytkownika
         public static event SaveToFile SaveInfo;
+        
+        
+        public delegate void RemoveFromFile(User x, List<Driver> drivers,
+            List<Mechanics> mechanics, List<Principal> principals);
+        public static event RemoveFromFile RemoveInfo;
+
 
         // Właściwości użytkownika: imię, nazwisko, rola, uprawnienia
         public string FirstName { get; set; }
@@ -65,6 +69,12 @@ namespace f1management.Methods
         public static void TriggerSave(User user, List<Driver> drivers, List<Mechanics> mechanics, List<Principal> principals)
         {
             SaveInfo?.Invoke(user, drivers, mechanics, principals);
+        }
+        
+
+        public static void TriggerRemove(User user, List<Driver> drivers, List<Mechanics> mechanics, List<Principal> principals)
+        {
+            RemoveInfo?.Invoke(user, drivers, mechanics, principals);
         }
     }
 
