@@ -4,15 +4,16 @@ using System.Collections.Generic;
 
 namespace f1management.TeamManagement
 {
-    public class Principal : User
+    public class Principal : User, Information
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        public Principal(string firstName, string lastName) : base(Role.Principal)
+        public Principal(string firstName, string lastName) : base(firstName, lastName, Role.Principal)
         {
             FirstName = firstName;
             LastName = lastName;
+
         }
 
         public void DisplayInfo()

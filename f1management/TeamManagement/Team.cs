@@ -10,6 +10,7 @@ namespace f1management.TeamManagement
         public List<Mechanics> Mechanics { get; set; }
         public List<Driver> Drivers { get; set; }
         public float Budget { get; set; }
+        
 
         public delegate void TeamInfo();
 
@@ -20,6 +21,7 @@ namespace f1management.TeamManagement
             Mechanics = mechanics;
             Drivers = drivers;
             Budget = budget;
+            
         }
 
         public void AddDriver(Driver driver)

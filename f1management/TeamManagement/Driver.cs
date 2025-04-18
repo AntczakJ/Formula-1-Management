@@ -4,16 +4,19 @@ using System.Collections.Generic;
 
 namespace f1management.TeamManagement
 {
-    public class Driver : User
+    public class Driver : User, Information
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        
 
-        public Driver(string firstName, string lastName) : base(Role.Driver)
+        public Driver(string firstName, string lastName) : base(firstName, lastName, Role.Driver)
         {
             FirstName = firstName;
             LastName = lastName;
         }
+
+        
 
         public void DisplayInfo()
         {
