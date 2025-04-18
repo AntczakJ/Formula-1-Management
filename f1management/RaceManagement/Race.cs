@@ -1,4 +1,5 @@
 ﻿using f1management.Methods;
+using f1management.TeamManagement;
 
 namespace f1management.RaceManagement;
 
@@ -8,20 +9,44 @@ public class Race
     public DateTime StartDate { get; set; }
     public Dictionary<string, DateTime> Race_Info { get; set; }
     
+    public delegate void SaveToList(Race race, List<Race> races);
+    public static event SaveToList SaveRaceToList;
+
+    public Race(string name, DateTime startDate)
+    {
+        Name = name;
+        StartDate = startDate;
+        
+        SaveRaceToList?.Invoke(this, new List<Race>());
+    }
+    
         public void DisplayInfo()
         {
             Console.WriteLine($"Wyścig {Name} zacznie sie {StartDate}");
         }
 
-        public void AddRace(string name, DateTime startDate)
+        public void AddRace(List<Race> races)
         {
-            if (Race_Info.ContainsKey(name))
+            if (races.Contains(this))
             {
-                Console.WriteLine($"Podany wyscig {name} już istnieje");
+                Console.WriteLine($"Wyscig {Name} już istnieje");
             }
             else
             {
-                Race_Info.Add(name, startDate);
+                races.Add(this);
+                Console.WriteLine($"Wyścig {Name} dodany.");
+            }
+        }
+        public void RemoveRace(List<Race> races)
+        {
+            if (races.Contains(this))
+            {
+                races.Remove(this);
+                Console.WriteLine($"Wyscig {Name} jest usunięty");
+            }
+            else
+            {
+                Console.WriteLine($"Wyścig {Name} nie istnieje.");
             }
         }
         public string DateChange(DateTime date)

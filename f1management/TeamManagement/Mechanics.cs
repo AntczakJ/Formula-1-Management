@@ -6,14 +6,10 @@ namespace f1management.TeamManagement
 {
     public class Mechanics : User, Information
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
 
         public Mechanics(string firstName, string lastName) : base(firstName, lastName, Role.Mechanic)
         {
-            FirstName = firstName;
-            LastName = lastName;
-
+            User.TriggerSave(this, Program.Drivers, Program.Mechanics, Program.Principals);
         }
 
         public void DisplayInfo()
@@ -21,17 +17,20 @@ namespace f1management.TeamManagement
             Console.WriteLine($"Mechanik: {FirstName} {LastName}");
         }
 
-        public void AddMechanic(List<Mechanics> mechanics)
+        public void AddMechanic(User user, List<Mechanics> mechanics)
         {
-            if (mechanics.Contains(this))
-            {
-                Console.WriteLine($"Mechanik {FirstName} {LastName} już istnieje.");
-            }
-            else
-            {
-                mechanics.Add(this);
-                Console.WriteLine($"Mechanik {FirstName} {LastName} dodany.");
-            }
+            
+                if (!mechanics.Any(d => d.FirstName == FirstName && d.LastName == LastName))
+                {
+                    mechanics.Add(this);
+                    Console.WriteLine($"Mechanik {FirstName} {LastName} dodany.");
+                }
+                else
+                {
+                    Console.WriteLine($"Mechanik {FirstName} {LastName} już istnieje.");
+                }
+            
+            
         }
 
         public void RemoveMechanic(List<Mechanics> mechanics)

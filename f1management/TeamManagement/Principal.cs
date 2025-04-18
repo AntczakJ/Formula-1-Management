@@ -11,9 +11,8 @@ namespace f1management.TeamManagement
 
         public Principal(string firstName, string lastName) : base(firstName, lastName, Role.Principal)
         {
-            FirstName = firstName;
-            LastName = lastName;
-
+            User.TriggerSave(this, Program.Drivers, Program.Mechanics, Program.Principals);
+        
         }
 
         public void DisplayInfo()
@@ -21,16 +20,23 @@ namespace f1management.TeamManagement
             Console.WriteLine($"Szef zespołu: {FirstName} {LastName}");
         }
 
-        public void AddPrincipal(List<Principal> principals)
+        public void AddPrincipal(User user, List<Principal> principals)
         {
-            if (principals.Contains(this))
+            if (user is Principal principal)
             {
-                Console.WriteLine($"Szef zespołu {FirstName} {LastName} już istnieje.");
+                if (!principals.Any(d => d.FirstName == principal.FirstName && d.LastName == principal.LastName))
+                {
+                    principals.Add(principal);
+                    Console.WriteLine($"Szef {principal.FirstName} {principal.LastName} dodany.");
+                }
+                else
+                {
+                    Console.WriteLine($"Szef {principal.FirstName} {principal.LastName} już istnieje.");
+                }
             }
             else
             {
-                principals.Add(this);
-                Console.WriteLine($"Szef zespołu {FirstName} {LastName} dodany.");
+                Console.WriteLine("[ERROR] Obiekt user NIE JEST typu principal");
             }
         }
 

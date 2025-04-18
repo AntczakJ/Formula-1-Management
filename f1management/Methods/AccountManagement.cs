@@ -1,6 +1,7 @@
 // Import przestrzeni nazw (TeamManagement zawiera np. klasy związane z zespołami F1)
 using f1management.TeamManagement;
 using System;
+using f1management.RaceManagement;
 
 namespace f1management.Methods
 {
@@ -29,7 +30,10 @@ namespace f1management.Methods
     public class User
     {
         // Definicja delegata (podpis metody) do zapisu użytkownika do pliku
-        public delegate void SaveToFile(User x);
+        public delegate void SaveToFile(User x, List<Driver> drivers,
+            List<Mechanics> mechanics, List<Principal> principals);
+        
+        
 
         // Event, który można wywołać by zapisać użytkownika
         public static event SaveToFile SaveInfo;
@@ -43,21 +47,24 @@ namespace f1management.Methods
         // Konstruktor – tworzy użytkownika i przypisuje mu odpowiednie uprawnienia na podstawie roli
         public User(string firstname, string lastname, Role role)
         {
+            
             FirstName = firstname;
             LastName = lastname;
             Role = role;
-
             // Pobranie uprawnień z klasy RBAC
             Permissions = RBAC.GetPermissions(role);
 
-            // Wywołanie zdarzenia – np. zapis do pliku
-            SaveInfo?.Invoke(this);
         }
 
         // Sprawdzenie, czy użytkownik ma konkretne uprawnienie
         public bool HasPermission(Permission permission)
         {
             return Permissions.Contains(permission);
+        }
+        
+        public static void TriggerSave(User user, List<Driver> drivers, List<Mechanics> mechanics, List<Principal> principals)
+        {
+            SaveInfo?.Invoke(user, drivers, mechanics, principals);
         }
     }
 

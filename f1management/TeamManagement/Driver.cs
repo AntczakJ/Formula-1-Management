@@ -6,14 +6,9 @@ namespace f1management.TeamManagement
 {
     public class Driver : User, Information
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        
-
         public Driver(string firstName, string lastName) : base(firstName, lastName, Role.Driver)
         {
-            FirstName = firstName;
-            LastName = lastName;
+            User.TriggerSave(this, Program.Drivers, Program.Mechanics, Program.Principals);
         }
 
         
@@ -23,16 +18,23 @@ namespace f1management.TeamManagement
             Console.WriteLine($"Kierowca: {FirstName} {LastName}");
         }
 
-        public void AddDriver(List<Driver> drivers)
+        public void AddDriver(User user, List<Driver> drivers)
         {
-            if (drivers.Contains(this))
+            if (user is Driver driver)
             {
-                Console.WriteLine($"Kierowca {FirstName} {LastName} już istnieje.");
+                if (!drivers.Any(d => d.FirstName == driver.FirstName && d.LastName == driver.LastName))
+                {
+                    drivers.Add(driver);
+                    Console.WriteLine($"Kierowca {driver.FirstName} {driver.LastName} dodany.");
+                }
+                else
+                {
+                    Console.WriteLine($"Kierowca {driver.FirstName} {driver.LastName} już istnieje.");
+                }
             }
             else
             {
-                drivers.Add(this);
-                Console.WriteLine($"Kierowca {FirstName} {LastName} dodany.");
+                Console.WriteLine("[ERROR] Obiekt user NIE JEST typu Driver");
             }
         }
 
