@@ -36,7 +36,7 @@ class Program
             File.AppendAllText("Lista.txt", $"{x.FirstName} {x.LastName}\n");
 
             if (x is Driver d)
-                d.AddDriver(x, drivers);
+                d.AddDriver(drivers);
             else if (x is Principal p)
                 p.AddPrincipal(x, principals);
             else if (x is Mechanics m)

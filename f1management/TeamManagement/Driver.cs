@@ -18,24 +18,20 @@ namespace f1management.TeamManagement
             Console.WriteLine($"Kierowca: {FirstName} {LastName}");
         }
 
-        public void AddDriver(User user, List<Driver> drivers)
+        public void AddDriver(List<Driver> drivers)
         {
-            if (user is Driver driver)
-            {
-                if (!drivers.Any(d => d.FirstName == driver.FirstName && d.LastName == driver.LastName))
+            
+                if (drivers.Contains(this))
                 {
-                    drivers.Add(driver);
-                    Console.WriteLine($"Kierowca {driver.FirstName} {driver.LastName} dodany.");
+                    drivers.Add(this);
+                    Console.WriteLine($"Kierowca {FirstName} {LastName} dodany.");
                 }
                 else
                 {
-                    Console.WriteLine($"Kierowca {driver.FirstName} {driver.LastName} już istnieje.");
+                    Console.WriteLine($"Kierowca {FirstName} {LastName} już istnieje.");
                 }
-            }
-            else
-            {
-                Console.WriteLine("[ERROR] Obiekt user NIE JEST typu Driver");
-            }
+            
+            
         }
 
         public void RemoveDriver(List<Driver> drivers)
