@@ -21,7 +21,7 @@ namespace f1management.TeamManagement
 
         public void DisplayInfo()
         {
-            Console.WriteLine($"Kierowca: {FirstName} {LastName}");
+            Console.WriteLine($"{FirstName} {LastName}");
         }
 
         public void AddDriver(List<Driver> drivers)

@@ -13,3 +13,13 @@
 [2025-04-18 17:41:02] [Red Bull] Utworzono zespół Red Bull
 [2025-04-18 17:41:23] [Red Bull] Zwiększono budżet o 20$ z powodu: bo tak
 [2025-04-18 17:41:46] [Ferrari] Zwiększono budżet o 200$ z powodu: bo tak
+[DODANO] Principal: robert kubica | 2025-04-18 17:47:10
+[DODANO] Principal: jan antcza | 2025-04-18 18:03:04
+[DODANO] Driver: robert kubica | 2025-04-18 18:03:48
+[DODANO] Mechanic: szybki bill | 2025-04-18 18:04:13
+[2025-04-18 18:04:44] [Red Bull] Przypisano szefa zespołu jan antcza
+[2025-04-18 18:05:24] [Red Bull] Dodano kierowcę robert kubica
+[2025-04-18 18:05:42] [Red Bull] Dodano mechanika szybki bill
+[DODANO] Principal: janek antczakini | 2025-04-18 18:08:44
+[DODANO] Principal: jebaniutki jasiek | 2025-04-18 18:18:48
+[DODANO] Principal: j j | 2025-04-18 18:20:47
