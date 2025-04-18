@@ -6,10 +6,17 @@ namespace f1management.TeamManagement
 {
     public class Mechanics : User, Information
     {
-
-        public Mechanics(string firstName, string lastName) : base(firstName, lastName, Role.Mechanic)
+        public Mechanics(string firstName, string lastName, string username)
+            : base(firstName, lastName, Role.Mechanic, username)
         {
-            User.TriggerSave(this, Program.Drivers, Program.Mechanics, Program.Principals);
+            try
+            {
+                User.TriggerSave(this, Program.Drivers, Program.Mechanics, Program.Principals);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd przy dodawaniu mechanika: {ex.Message}");
+            }
         }
 
         public void DisplayInfo()
@@ -19,7 +26,8 @@ namespace f1management.TeamManagement
 
         public void AddMechanic(User user, List<Mechanics> mechanics)
         {
-            
+            try
+            {
                 if (!mechanics.Contains(this))
                 {
                     mechanics.Add(this);
@@ -29,21 +37,31 @@ namespace f1management.TeamManagement
                 {
                     Console.WriteLine($"Mechanik {FirstName} {LastName} już istnieje.");
                 }
-            
-            
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd przy dodawaniu mechanika: {ex.Message}");
+            }
         }
 
         public void RemoveMechanic(List<Mechanics> mechanics)
         {
-            if (mechanics.Contains(this))
+            try
             {
-                mechanics.Remove(this);
-                Console.WriteLine($"Mechanik {FirstName} {LastName} usunięty.");
-                User.TriggerRemove(this, Program.Drivers, Program.Mechanics, Program.Principals);
+                if (mechanics.Contains(this))
+                {
+                    mechanics.Remove(this);
+                    Console.WriteLine($"Mechanik {FirstName} {LastName} usunięty.");
+                    User.TriggerRemove(this, Program.Drivers, Program.Mechanics, Program.Principals);
+                }
+                else
+                {
+                    Console.WriteLine($"Mechanik {FirstName} {LastName} nie istnieje.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine($"Mechanik {FirstName} {LastName} nie istnieje.");
+                Console.WriteLine($"Błąd przy usuwaniu mechanika: {ex.Message}");
             }
         }
     }

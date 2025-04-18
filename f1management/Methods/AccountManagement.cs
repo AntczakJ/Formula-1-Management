@@ -46,19 +46,21 @@ namespace f1management.Methods
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public Role Role { get; set; }
+        
+        public string Username { get; set; }
+
         public List<Permission> Permissions { get; set; }
 
         // Konstruktor – tworzy użytkownika i przypisuje mu odpowiednie uprawnienia na podstawie roli
-        public User(string firstname, string lastname, Role role)
+        public User(string firstname, string lastname, Role role, string username)
         {
-            
             FirstName = firstname;
             LastName = lastname;
             Role = role;
-            // Pobranie uprawnień z klasy RBAC
+            Username = username;
             Permissions = RBAC.GetPermissions(role);
-
         }
+
 
         // Sprawdzenie, czy użytkownik ma konkretne uprawnienie
         public bool HasPermission(Permission permission)

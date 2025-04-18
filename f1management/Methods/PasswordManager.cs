@@ -56,5 +56,18 @@ namespace f1management.Methods
                 return Convert.ToBase64String(bytes);
             }
         }
+        public static bool DoesLoginExist(string username)
+        {
+            return File.ReadLines(_passwordFilePath)
+                .Any(line => line.Split(',')[0] == username);
+        }
+        public static void RemoveLogin(string username)
+        {
+            var lines = File.ReadAllLines(_passwordFilePath).ToList();
+            lines = lines.Where(line => !line.StartsWith(username + ",")).ToList();
+            File.WriteAllLines(_passwordFilePath, lines);
+        }
+
+
     }
 }

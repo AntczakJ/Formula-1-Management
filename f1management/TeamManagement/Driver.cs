@@ -6,12 +6,18 @@ namespace f1management.TeamManagement
 {
     public class Driver : User, Information
     {
-        public Driver(string firstName, string lastName) : base(firstName, lastName, Role.Driver)
+        public Driver(string firstName, string lastName, string username)
+            : base(firstName, lastName, Role.Driver, username)
         {
-            User.TriggerSave(this, Program.Drivers, Program.Mechanics, Program.Principals);
+            try
+            {
+                User.TriggerSave(this, Program.Drivers, Program.Mechanics, Program.Principals);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd przy dodawaniu kierowcy: {ex.Message}");
+            }
         }
-
-        
 
         public void DisplayInfo()
         {
@@ -20,7 +26,8 @@ namespace f1management.TeamManagement
 
         public void AddDriver(List<Driver> drivers)
         {
-            
+            try
+            {
                 if (!drivers.Contains(this))
                 {
                     drivers.Add(this);
@@ -30,21 +37,31 @@ namespace f1management.TeamManagement
                 {
                     Console.WriteLine($"Kierowca {FirstName} {LastName} już istnieje.");
                 }
-            
-            
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd przy dodawaniu kierowcy: {ex.Message}");
+            }
         }
 
         public void RemoveDriver(List<Driver> drivers)
         {
-            if (drivers.Contains(this))
+            try
             {
-                drivers.Remove(this);
-                Console.WriteLine($"Kierowca {FirstName} {LastName} usunięty.");
-                User.TriggerRemove(this, Program.Drivers, Program.Mechanics, Program.Principals);
+                if (drivers.Contains(this))
+                {
+                    drivers.Remove(this);
+                    Console.WriteLine($"Kierowca {FirstName} {LastName} usunięty.");
+                    User.TriggerRemove(this, Program.Drivers, Program.Mechanics, Program.Principals);
+                }
+                else
+                {
+                    Console.WriteLine($"Kierowca {FirstName} {LastName} nie istnieje.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine($"Kierowca {FirstName} {LastName} nie istnieje.");
+                Console.WriteLine($"Błąd przy usuwaniu kierowcy: {ex.Message}");
             }
         }
     }

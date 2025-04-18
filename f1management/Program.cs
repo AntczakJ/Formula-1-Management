@@ -57,12 +57,23 @@ class Program
         {
             File.AppendAllText("Lista.txt",
                 $"[USUNIĘTO] {x.Role}: {x.FirstName} {x.LastName} | {DateTime.Now}\n");
+
+            string login = $"{x.FirstName}.{x.LastName}";
+            PasswordManager.RemoveLogin(login);
+
+            if (x is Driver d && drivers.Contains(d))
+                drivers.Remove(d);
+            else if (x is Mechanics m && mechanics.Contains(m))
+                mechanics.Remove(m);
+            else if (x is Principal p && principals.Contains(p))
+                principals.Remove(p);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }
     }
+
 
     public static void SaveRaces(Race race, List<Race> races)
     {
@@ -81,18 +92,42 @@ class Program
             Console.WriteLine($"Błąd przy zapisie do pliku: {ex.Message}");
         }
     }
+    
+
+    // Fragment rozszerzonego ShowLoggedMenu
+    
+
+
+    public static void LogTeamAction(Team team, string action)
+    {
+        string logEntry = $"[{DateTime.Now}] [{team.TeamName}] {action}";
+        Console.WriteLine(logEntry); // dla widoczności w konsoli
+        File.AppendAllText("Lista.txt", logEntry + Environment.NewLine);
+    }
+    
+    
+
+
+    public static List<Principal> Principals = new List<Principal>();
+    public static List<Driver> Drivers = new List<Driver>();
+    public static List<Mechanics> Mechanics = new List<Mechanics>();
+    public static List<Race> Races = new List<Race>();
+    public static List<Team> Teams = new List<Team>();
+    
+
+    public static List<Team> GetAllTeams()
+    {
+        return Teams;
+    }
+    
     public static Team GetTeamFromUser()
     {
         Console.Write("Podaj nazwę zespołu: ");
         string name = Console.ReadLine();
         return GetAllTeams().FirstOrDefault(t => t.TeamName.Equals(name, StringComparison.OrdinalIgnoreCase));
     }
-
-    public static List<Team> GetAllTeams()
-    {
-        // Przykład tymczasowy – zaimplementuj prawdziwe przechowywanie zespołów jeśli chcesz
-        return new List<Team>(); // Zamień na np. `public static List<Team> Teams = new();` i dodawaj do tej listy
-    }
+    
+   // Fragment rozszerzonego ShowLoggedMenu
     public static void ShowLoggedMenu(User user)
     {
         while (true)
@@ -102,83 +137,285 @@ class Program
 
             Console.WriteLine("1. Wyświetl zespoły");
             Console.WriteLine("2. Dodaj zespół");
-            Console.WriteLine("3. Zwiększ budżet zespołu");
-            Console.WriteLine("4. Zmniejsz budżet zespołu");
-            Console.WriteLine("5. Wyświetl dane kierowcy");
-            Console.WriteLine("6. Wyświetl dane szefa zespołu");
-            Console.WriteLine("0. Wyloguj");
+            if (user.Role == Role.Principal)
+            {
+                Console.WriteLine("3. Zwiększ budżet zespołu");
+                Console.WriteLine("4. Zmniejsz budżet zespołu");
+            }
+            Console.WriteLine("5. Wyświetl kierowcę");
+            Console.WriteLine("6. Wyświetl szefa zespołu");
+            Console.WriteLine("7. Wyświetl zespół");
+            Console.WriteLine("8. Wyświetl mechanika");
 
+            if (user.Role == Role.Principal)
+            {
+                Console.WriteLine("9. Dodaj kierowcę do zespołu");
+                Console.WriteLine("10. Dodaj mechanika do zespołu");
+                Console.WriteLine("11. Dodaj wyścig");
+                Console.WriteLine("13. Dodaj nowego kierowcę");
+                Console.WriteLine("14. Dodaj nowego mechanika");
+                Console.WriteLine("15. Przypisz się do zespołu jako szef");
+            }
+
+            if (user.Role != Role.Mechanic)
+            {
+                Console.WriteLine("12. Wyświetl informacje o wyścigu");
+            }
+
+            Console.WriteLine("0. Wyloguj");
             Console.Write("Opcja: ");
             var option = Console.ReadLine();
 
-            switch (option)
+            try
             {
-                case "1":
-                    if (user.HasPermission(Permission.Read))
-                    {
-                        Console.WriteLine("Zespoły:");
-                        foreach (var team in GetAllTeams())
-                            team.DisplayInfo();
-                    }
-                    break;
+                switch (option)
+                {
+                    case "1":
+                        if (user.HasPermission(Permission.Read))
+                        {
+                            if (Teams.Count == 0)
+                                Console.WriteLine("Brak zespołów.");
+                            else
+                                foreach (var t in Teams) t.DisplayInfo();
+                        }
+                        break;
 
-                case "2":
-                    if (user.HasPermission(Permission.ManageTeam))
-                    {
-                        Console.Write("Nazwa zespołu: ");
-                        string name = Console.ReadLine();
-                        var team = new Team(name, null, new List<Mechanics>(), new List<Driver>(), 0);
-                        Team.TriggerTeamLog(team, $"Utworzono zespół {name}");
+                    case "2":
+                        if (user.HasPermission(Permission.ManageTeam))
+                        {
+                            Console.Write("Nazwa zespołu: ");
+                            string name = Console.ReadLine();
+                            if (Teams.Any(t => t.TeamName == name))
+                            {
+                                Console.WriteLine("Zespół o tej nazwie już istnieje.");
+                                break;
+                            }
+                            var newTeam = new Team(name, null, new List<Mechanics>(), new List<Driver>(), 0);
+                            Teams.Add(newTeam);
+                            Team.TriggerTeamLog(newTeam, $"Utworzono zespół {name}");
+                        }
+                        break;
 
-                    }
-                    break;
+                    case "3":
+                    case "4":
+                        if (user.Role != Role.Principal)
+                        {
+                            Console.WriteLine("Brak uprawnień do modyfikowania budżetu.");
+                            break;
+                        }
 
-                case "3":
-                    if (user.HasPermission(Permission.ManageTeam))
-                    {
                         var team = GetTeamFromUser();
+                        if (team == null)
+                        {
+                            Console.WriteLine("Zespół nie istnieje.");
+                            break;
+                        }
                         Console.Write("Kwota: ");
-                        float kwota = float.Parse(Console.ReadLine());
+                        if (!float.TryParse(Console.ReadLine(), out float kwota))
+                        {
+                            Console.WriteLine("Niepoprawna kwota.");
+                            break;
+                        }
                         Console.Write("Powód: ");
                         string reason = Console.ReadLine();
-                        team?.IncreaseBudget(kwota, reason);
-                    }
-                    break;
+                        if (option == "3")
+                            team.IncreaseBudget(kwota, reason);
+                        else
+                            team.DecreaseBudget(kwota, reason);
+                        break;
 
-                case "4":
-                    if (user.HasPermission(Permission.ManageTeam))
-                    {
-                        var team = GetTeamFromUser();
-                        Console.Write("Kwota: ");
-                        float kwota = float.Parse(Console.ReadLine());
-                        Console.Write("Powód: ");
-                        string reason = Console.ReadLine();
-                        team?.DecreaseBudget(kwota, reason);
-                    }
-                    break;
+                    case "5":
+                        if (Drivers.Count == 0) { Console.WriteLine("Brak kierowców."); break; }
+                        for (int i = 0; i < Drivers.Count; i++)
+                            Console.WriteLine($"{i + 1}. {Drivers[i].FirstName} {Drivers[i].LastName}");
+                        Console.Write("Wybierz nr kierowcy: ");
+                        if (int.TryParse(Console.ReadLine(), out int dIndex) && dIndex > 0 && dIndex <= Drivers.Count)
+                            Drivers[dIndex - 1].DisplayInfo();
+                        else
+                            Console.WriteLine("Niepoprawny wybór.");
+                        break;
 
-                case "5":
-                    if (user.HasPermission(Permission.Read))
-                    {
-                        foreach (var driver in Drivers)
-                            driver.DisplayInfo();
-                    }
-                    break;
+                    case "6":
+                        if (Principals.Count == 0) { Console.WriteLine("Brak szefów zespołów."); break; }
+                        for (int i = 0; i < Principals.Count; i++)
+                            Console.WriteLine($"{i + 1}. {Principals[i].FirstName} {Principals[i].LastName}");
+                        Console.Write("Wybierz nr: ");
+                        if (int.TryParse(Console.ReadLine(), out int pIndex) && pIndex > 0 && pIndex <= Principals.Count)
+                            Principals[pIndex - 1].DisplayInfo();
+                        else
+                            Console.WriteLine("Niepoprawny wybór.");
+                        break;
 
-                case "6":
-                    if (user.HasPermission(Permission.Read))
-                    {
-                        foreach (var p in Principals)
-                            p.DisplayInfo();
-                    }
-                    break;
+                    case "7":
+                        if (Teams.Count == 0) { Console.WriteLine("Brak zespołów."); break; }
+                        for (int i = 0; i < Teams.Count; i++)
+                            Console.WriteLine($"{i + 1}. {Teams[i].TeamName}");
+                        Console.Write("Wybierz nr zespołu: ");
+                        if (int.TryParse(Console.ReadLine(), out int tIndex) && tIndex > 0 && tIndex <= Teams.Count)
+                            Teams[tIndex - 1].DisplayInfo();
+                        else
+                            Console.WriteLine("Niepoprawny wybór.");
+                        break;
 
-                case "0":
-                    return;
+                    case "8":
+                        if (Mechanics.Count == 0) { Console.WriteLine("Brak mechaników."); break; }
+                        for (int i = 0; i < Mechanics.Count; i++)
+                            Console.WriteLine($"{i + 1}. {Mechanics[i].FirstName} {Mechanics[i].LastName}");
+                        Console.Write("Wybierz nr: ");
+                        if (int.TryParse(Console.ReadLine(), out int mIndex) && mIndex > 0 && mIndex <= Mechanics.Count)
+                            Mechanics[mIndex - 1].DisplayInfo();
+                        else
+                            Console.WriteLine("Niepoprawny wybór.");
+                        break;
 
-                default:
-                    Console.WriteLine("Nieprawidłowa opcja.");
-                    break;
+                    case "9":
+                        if (user.Role == Role.Principal)
+                        {
+                            var teamAddDriver = GetTeamFromUser();
+                            if (teamAddDriver == null) { Console.WriteLine("Zespół nie istnieje."); break; }
+                            if (Drivers.Count == 0) { Console.WriteLine("Brak dostępnych kierowców."); break; }
+                            for (int i = 0; i < Drivers.Count; i++)
+                                Console.WriteLine($"{i + 1}. {Drivers[i].FirstName} {Drivers[i].LastName}");
+                            Console.Write("Wybierz nr kierowcy do dodania: ");
+                            if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= Drivers.Count)
+                                teamAddDriver.AddDriver(Drivers[index - 1]);
+                            else
+                                Console.WriteLine("Nieprawidłowy wybór.");
+                        }
+                        break;
+
+                    case "10":
+                        if (user.Role == Role.Principal)
+                        {
+                            var teamAddMech = GetTeamFromUser();
+                            if (teamAddMech == null) { Console.WriteLine("Zespół nie istnieje."); break; }
+                            if (Mechanics.Count == 0) { Console.WriteLine("Brak dostępnych mechaników."); break; }
+                            for (int i = 0; i < Mechanics.Count; i++)
+                                Console.WriteLine($"{i + 1}. {Mechanics[i].FirstName} {Mechanics[i].LastName}");
+                            Console.Write("Wybierz nr mechanika do dodania: ");
+                            if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= Mechanics.Count)
+                                teamAddMech.AddMechanic(Mechanics[index - 1]);
+                            else
+                                Console.WriteLine("Nieprawidłowy wybór.");
+                        }
+                        break;
+
+                    case "11":
+                        if (user.Role == Role.Principal)
+                        {
+                            Console.Write("Nazwa wyścigu: ");
+                            string raceName = Console.ReadLine();
+                            Console.Write("Data (YYYY-MM-DD): ");
+                            if (DateTime.TryParse(Console.ReadLine(), out DateTime raceDate))
+                            {
+                                var race = new Race(raceName, raceDate);
+                                Races.Add(race);
+                                Console.WriteLine("Wyścig dodany.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Niepoprawna data.");
+                            }
+                        }
+                        break;
+
+                    case "12":
+                        if (user.Role != Role.Mechanic)
+                        {
+                            if (Races.Count == 0)
+                            {
+                                Console.WriteLine("Brak wyścigów.");
+                                break;
+                            }
+                            for (int i = 0; i < Races.Count; i++)
+                                Console.WriteLine($"{i + 1}. {Races[i].Name}");
+                            Console.Write("Wybierz nr wyścigu: ");
+                            if (int.TryParse(Console.ReadLine(), out int raceIndex) && raceIndex > 0 && raceIndex <= Races.Count)
+                                Races[raceIndex - 1].DisplayInfo();
+                            else
+                                Console.WriteLine("Nieprawidłowy wybór.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Brak uprawnień do wyświetlania wyścigów.");
+                        }
+                        break;
+                    case "13":
+                        if (user.Role == Role.Principal)
+                        {
+                            Console.Write("Imię kierowcy: ");
+                            string df = Console.ReadLine();
+                            Console.Write("Nazwisko kierowcy: ");
+                            string dl = Console.ReadLine();
+                            Console.Write("Login: ");
+                            string du = Console.ReadLine();
+                            if (PasswordManager.DoesLoginExist(du))
+                            {
+                                Console.WriteLine("Użytkownik z tym loginem już istnieje.");
+                                break;
+                            }
+                            Console.Write("Hasło: ");
+                            string dp = Console.ReadLine();
+                            PasswordManager.SavePassword(du, dp);
+                            var newDriver = new Driver(df, dl, du);
+                            Program.Drivers.Add(newDriver);
+                            Console.WriteLine("Kierowca dodany.");
+                        }
+                        break;
+
+                    case "14":
+                        if (user.Role == Role.Principal)
+                        {
+                            Console.Write("Imię mechanika: ");
+                            string mf = Console.ReadLine();
+                            Console.Write("Nazwisko mechanika: ");
+                            string ml = Console.ReadLine();
+                            Console.Write("Login: ");
+                            string mu = Console.ReadLine();
+                            if (PasswordManager.DoesLoginExist(mu))
+                            {
+                                Console.WriteLine("Użytkownik z tym loginem już istnieje.");
+                                break;
+                            }
+                            Console.Write("Hasło: ");
+                            string mp = Console.ReadLine();
+                            PasswordManager.SavePassword(mu, mp);
+                            var newMech = new Mechanics(mf, ml, mu);
+                            Program.Mechanics.Add(newMech);
+                            Console.WriteLine("Mechanik dodany.");
+                        }
+                        break;
+
+                    case "15":
+                        if (user.Role == Role.Principal)
+                        {
+                            var targetTeam = GetTeamFromUser();
+                            if (targetTeam == null)
+                            {
+                                Console.WriteLine("Zespół nie istnieje.");
+                                break;
+                            }
+                            if (targetTeam.Principal != null)
+                            {
+                                Console.WriteLine("Ten zespół już ma przypisanego szefa.");
+                                break;
+                            }
+                            targetTeam.AddPrincipal((Principal)user);
+                        }
+                        break;
+
+
+                    case "0":
+                        return;
+
+                    default:
+                        Console.WriteLine("Nieprawidłowa opcja.");
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd: {ex.Message}");
             }
 
             Console.WriteLine("Naciśnij Enter, aby kontynuować...");
@@ -186,18 +423,7 @@ class Program
         }
     }
 
-    public static void LogTeamAction(Team team, string action)
-    {
-        string logEntry = $"[{DateTime.Now}] [{team.TeamName}] {action}";
-        Console.WriteLine(logEntry); // dla widoczności w konsoli
-        File.AppendAllText("Lista.txt", logEntry + Environment.NewLine);
-    }
 
-
-    public static List<Principal> Principals = new List<Principal>();
-    public static List<Driver> Drivers = new List<Driver>();
-    public static List<Mechanics> Mechanics = new List<Mechanics>();
-    public static List<Race> Races = new List<Race>();
     public static void Main(string[] args)
     {
         // 📌 Przenieś eventy TU
@@ -229,6 +455,14 @@ class Program
                     string lname = Console.ReadLine();
                     Console.Write("Login: ");
                     username = Console.ReadLine();
+
+                    if (PasswordManager.DoesLoginExist(username))
+                    {
+                        Console.WriteLine("Taki login już istnieje. Rejestracja przerwana.");
+                        Console.ReadLine();
+                        break;
+                    }
+
                     Console.Write("Hasło: ");
                     string password = Console.ReadLine();
 
@@ -239,15 +473,16 @@ class Program
                     switch (role)
                     {
                         case Role.Principal:
-                            Principals.Add(new Principal(fname, lname));
+                            new Principal(fname, lname, username);
                             break;
                         case Role.Mechanic:
-                            Mechanics.Add(new Mechanics(fname, lname));
+                            new Mechanics(fname, lname, username);
                             break;
                         case Role.Driver:
-                            Drivers.Add(new Driver(fname, lname));
+                            new Driver(fname, lname, username);
                             break;
                     }
+
 
                     Console.WriteLine("Użytkownik zarejestrowany. Enter aby kontynuować.");
                     Console.ReadLine();
@@ -284,19 +519,20 @@ class Program
                     Console.Write("Hasło: ");
                     password = Console.ReadLine();
 
+                    // Sprawdzenie hasła
                     if (!PasswordManager.VerifyPassword(username, password))
                     {
-                        Console.WriteLine("Błąd logowania. Enter aby kontynuować.");
+                        Console.WriteLine("Błędny login lub hasło. Enter aby kontynuować.");
                         Console.ReadLine();
                         break;
                     }
 
-                    // Manualne szukanie użytkownika po imieniu i nazwisku (login = imie.nazwisko)
+                    // Szukanie obiektu użytkownika po loginie (user.Username)
                     currentUser = null;
 
                     foreach (var d in Drivers)
                     {
-                        if ($"{d.FirstName}.{d.LastName}".ToLower() == username.Trim().ToLower())
+                        if (d.Username == username)
                         {
                             currentUser = d;
                             break;
@@ -307,7 +543,7 @@ class Program
                     {
                         foreach (var m in Mechanics)
                         {
-                            if ($"{m.FirstName}.{m.LastName}".ToLower() == username.Trim().ToLower())
+                            if (m.Username == username)
                             {
                                 currentUser = m;
                                 break;
@@ -319,7 +555,7 @@ class Program
                     {
                         foreach (var p in Principals)
                         {
-                            if ($"{p.FirstName}.{p.LastName}".ToLower() == username.Trim().ToLower())
+                            if (p.Username == username)
                             {
                                 currentUser = p;
                                 break;
@@ -329,7 +565,7 @@ class Program
 
                     if (currentUser == null)
                     {
-                        Console.WriteLine("Nie znaleziono użytkownika.");
+                        Console.WriteLine("Użytkownik został znaleziony w pliku, ale nie istnieje obiekt w systemie.");
                         Console.ReadLine();
                         break;
                     }
@@ -337,6 +573,8 @@ class Program
                     Console.WriteLine($"Zalogowano jako {currentUser.FirstName} {currentUser.LastName} ({currentUser.Role})");
                     ShowLoggedMenu(currentUser);
                     break;
+
+
 
 
                 case "0":

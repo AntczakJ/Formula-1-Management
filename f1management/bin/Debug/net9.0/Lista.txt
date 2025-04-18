@@ -1,8 +1,15 @@
-[DODANO] Driver: Robert Kubica | 2025-04-18 16:00:26
-[DODANO] Driver: Charles Leclerc | 2025-04-18 16:01:19
-[DODANO] Principal: jan antczak | 2025-04-18 16:11:06
-[DODANO] Principal: jan antczal | 2025-04-18 16:12:09
-[DODANO] Principal: jan kowalski | 2025-04-18 16:23:30
-[DODANO] Principal: cwel jebany | 2025-04-18 16:28:03
-[DODANO] Principal: kurwo jebana | 2025-04-18 16:30:54
-[DODANO] Principal: prosze napraw | 2025-04-18 16:34:31
+[DODANO] Principal: smiec jebany | 2025-04-18 17:10:40
+[DODANO] Principal: Toto Wolf | 2025-04-18 17:20:08
+[2025-04-18 17:20:22] [Mercedes] Utworzono zespół Mercedes
+[2025-04-18 17:20:44] [Mercedes] Zmniejszono budżet o 20$ z powodu: bo tak
+[2025-04-18 17:21:09] [Mercedes] Zwiększono budżet o 20$ z powodu: zarobilem
+[DODANO] Driver: Robert Kubica | 2025-04-18 17:21:31
+[DODANO] Mechanic: louigi niebieski | 2025-04-18 17:22:09
+[DODANO] Principal: imie nazwisko | 2025-04-18 17:28:09
+[2025-04-18 17:28:27] [Red Bull] Utworzono zespół Red Bull
+[2025-04-18 17:28:54] [Red Bull] Zwiększono budżet o 20000$ z powodu: wygralem lotto
+[DODANO] Principal: cwel jebany | 2025-04-18 17:40:39
+[2025-04-18 17:40:56] [Ferrari] Utworzono zespół Ferrari
+[2025-04-18 17:41:02] [Red Bull] Utworzono zespół Red Bull
+[2025-04-18 17:41:23] [Red Bull] Zwiększono budżet o 20$ z powodu: bo tak
+[2025-04-18 17:41:46] [Ferrari] Zwiększono budżet o 200$ z powodu: bo tak

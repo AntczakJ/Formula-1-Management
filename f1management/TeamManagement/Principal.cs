@@ -6,11 +6,17 @@ namespace f1management.TeamManagement
 {
     public class Principal : User, Information
     {
-
-        public Principal(string firstName, string lastName) : base(firstName, lastName, Role.Principal)
+        public Principal(string firstName, string lastName, string username)
+            : base(firstName, lastName, Role.Principal, username)
         {
-            User.TriggerSave(this, Program.Drivers, Program.Mechanics, Program.Principals);
-        
+            try
+            {
+                User.TriggerSave(this, Program.Drivers, Program.Mechanics, Program.Principals);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd przy tworzeniu szefa zespołu: {ex.Message}");
+            }
         }
 
         public void DisplayInfo()
@@ -20,31 +26,45 @@ namespace f1management.TeamManagement
 
         public void AddPrincipal(User user, List<Principal> principals)
         {
-            if (user is Principal principal)
+            try
             {
-                if (!principals.Contains(this))
+                if (user is Principal principal)
                 {
-                    principals.Add(principal);
-                    Console.WriteLine($"Szef {principal.FirstName} {principal.LastName} dodany.");
+                    if (!principals.Contains(this))
+                    {
+                        principals.Add(principal);
+                        Console.WriteLine($"Szef {principal.FirstName} {principal.LastName} dodany.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Szef {principal.FirstName} {principal.LastName} już istnieje.");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine($"Szef {principal.FirstName} {principal.LastName} już istnieje.");
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd przy dodawaniu szefa: {ex.Message}");
             }
         }
 
         public void RemovePrincipal(List<Principal> principals)
         {
-            if (principals.Contains(this))
+            try
             {
-                principals.Remove(this);
-                Console.WriteLine($"Szef zespołu {FirstName} {LastName} usunięty.");
-                User.TriggerRemove(this, Program.Drivers, Program.Mechanics, Program.Principals);
+                if (principals.Contains(this))
+                {
+                    principals.Remove(this);
+                    Console.WriteLine($"Szef zespołu {FirstName} {LastName} usunięty.");
+                    User.TriggerRemove(this, Program.Drivers, Program.Mechanics, Program.Principals);
+                }
+                else
+                {
+                    Console.WriteLine($"Szef zespołu {FirstName} {LastName} nie istnieje.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine($"Szef zespołu {FirstName} {LastName} nie istnieje.");
+                Console.WriteLine($"Błąd przy usuwaniu szefa: {ex.Message}");
             }
         }
     }

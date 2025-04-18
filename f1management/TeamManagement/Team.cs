@@ -90,17 +90,18 @@ namespace f1management.TeamManagement
 
         public void AddPrincipal(Principal principal)
         {
-            if (Principal == principal)
+            if (Principal == null)
             {
-                Console.WriteLine($"Szef zespołu {principal.FirstName} {principal.LastName} już jest członkiem tego zespołu.");
+                Principal = principal;
+                Console.WriteLine($"Szef zespołu {principal.FirstName} {principal.LastName} został przypisany do zespołu.");
+                TriggerTeamLog(this, $"Przypisano szefa zespołu {principal.FirstName} {principal.LastName}");
             }
             else
             {
-                Principal = principal;
-                Console.WriteLine($"Szef zespołu {principal.FirstName} {principal.LastName} został dodany do zespołu.");
-                TriggerTeamLog(this, $"Dodano szefa zespołu {principal.FirstName} {principal.LastName}");
+                Console.WriteLine("Zespół już posiada szefa.");
             }
         }
+
 
         public void RemovePrincipal(Principal principal)
         {
