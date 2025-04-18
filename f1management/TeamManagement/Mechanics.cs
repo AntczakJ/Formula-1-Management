@@ -21,7 +21,7 @@ namespace f1management.TeamManagement
 
         public void DisplayInfo()
         {
-            Console.WriteLine($"{FirstName} {LastName}");
+            Console.WriteLine($"Mechanik: {FirstName} {LastName}");
         }
 
         public void AddMechanic(User user, List<Mechanics> mechanics)

@@ -133,27 +133,44 @@ namespace f1management.TeamManagement
 
         public void DisplayInfo()
         {
-            TeamInfo info = Principal.DisplayInfo;
-            info += () =>
-            {
-                Console.WriteLine("Kierowcy:");
-                foreach (var driver in Drivers)
-                {
-                    driver.DisplayInfo();
-                }
-            };
-            info += () =>
-            {
-                Console.WriteLine("Mechanicy:");
-                foreach (var mechanic in Mechanics)
-                {
-                    mechanic.DisplayInfo();
-                }
-            };
+            List<string> missingInfo = new List<string>();
+            if (Principal == null) missingInfo.Add("Brak szefa zespołu.");
+            if (Drivers.Count == 0) missingInfo.Add("Brak kierowców.");
+            if (Mechanics.Count == 0) missingInfo.Add("Brak mechaników.");
 
-            Console.WriteLine($"Zespół: {TeamName}");
-            Console.WriteLine($"Budżet: {Budget}$");
-            info.Invoke();
+            if (missingInfo.Count > 0)
+            {
+                Console.WriteLine("Zespół nie jest w pełni uzupełniony:");
+                foreach (var info in missingInfo)
+                {
+                    Console.WriteLine(info);
+                }
+            }
+            else
+            {
+                TeamInfo info = Principal.DisplayInfo;
+                info += () =>
+                {
+                    Console.WriteLine("Kierowcy:");
+                    foreach (var driver in Drivers)
+                    {
+                        driver.DisplayInfo();
+                    }
+                };
+                info += () =>
+                {
+                    Console.WriteLine("Mechanicy:");
+                    foreach (var mechanic in Mechanics)
+                    {
+                        mechanic.DisplayInfo();
+                    }
+                };
+
+                Console.WriteLine($"Zespół: {TeamName}");
+                Console.WriteLine($"Budżet: {Budget}$");
+                info.Invoke();
+            }
         }
+
     }
 }
